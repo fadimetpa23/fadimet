@@ -1,0 +1,24 @@
+
+.bg {
+	background: linear-gradient(
+		105deg,#6e99e6,#093c94
+	);
+  }
+
+  
+.text_white {
+	color: white;
+  }
+
+.titulo {
+	color: white;
+}
+
+.titulo ::after {
+	content: "";
+	display: block;
+	height: 2px;
+	width: 40px;
+	background: #fff;
+	margin-top: 20px;
+}

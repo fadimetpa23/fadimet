@@ -1,0 +1,230 @@
+ng-model de react se maneja con state
+
+trayendo usestate y useEffect from react
+
+cada uno tiene una funcionalidad distinta
+
+useEffect se usa para cuando se carga la page unicamente
+
+Hay que tener claro que los usestate son variables que se necesitan como sistema admin
+pero en siti web podemos usar getStaticPros para obtener data dinamica que nos ofrece
+react y solo se carga al momento del build, pero lo podemos conbinar con ISR obtener
+incremental static regeneration para poder hacer dinamico el getStaticPros y aun asi
+mejorar mas la velocidad de carga en una cierta cantidad de interfaces que nosotros 
+queramos para hacer eso solo tenemos que agrefar en el getStaticPros el revalidate 10 
+en este caso lo estaria haciendo cada 10 seg luego de tener algun cambion en el endPoint
+
+
+
+
+
+import Head from 'next/head';
+import { useRouter} from 'next/router';
+import styles from '../../styles/SingleProduct.module.css';
+import { useState, useEffect} from 'react'
+
+
+const singleproduct = (props) => {
+    
+    const router = useRouter();
+   
+    const [productFuerza, setProduct] = useState([]);
+    const [isLoad, setIsLoad] = useState(false);  
+   
+
+    useEffect(() => {
+        setProduct(props.prducto[0])
+        setIsLoad(true)
+    }, []);
+   
+   // setProduct(props)
+   
+
+if (isLoad) {
+    console.log(productFuerza)
+    return (
+		<>     
+			<Head>
+				<title>{productFuerza.Producto.Nombre}</title>
+			</Head>
+			
+            
+            <div className={styles.single_container}>
+				<div className={styles.left_section}>
+					<img src={productFuerza.Images[0].src} className={styles.left_img} alt="" />
+				</div>
+				<div className={styles.right_section}>
+					<h3 className={styles.title}>{productFuerza.Producto.Nombre}</h3>
+					<p className={styles.price}>${productFuerza.Producto.Precio_Venta}</p>
+					<div
+						className={styles.para}
+						dangerouslySetInnerHTML={{
+							__html: productFuerza.Producto.Detalle
+						}}
+					></div>
+					<button
+						className="btn snipcart-add-item"
+						data-item-id={productFuerza.Producto.id}
+						data-item-price={productFuerza.Producto.Precio_Venta}
+						data-item-url={`products/${productFuerza.Producto.UPC_Code}`}
+						data-item-image={productFuerza.Images[0].src}
+						data-item-name={productFuerza.Producto.Nombre}
+					>
+						Agregar al Carrito 🛒
+					</button>
+				</div>
+			</div>
+            
+		</>
+	);
+  }
+	
+};
+
+export default singleproduct;
+
+
+
+export const getServerSideProps= async (context) => {
+    
+    
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: context.query.productonombre })
+    };
+    
+    const data = await fetch("https://fadimet.com.pa/backendInterFuerzaFadimet/index.php/auth/getProductosNombre", requestOptions);
+
+    const result = await data.json();
+    
+    console.log(result.products)
+    /*  # call next api dynamically each request
+    const res = await fetch(`/api/${id}`);
+    const result = await res.json();
+  */
+    return {
+      props: {
+            prducto : result.products
+      },
+    };
+};    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import Head from 'next/head';
+import { useRouter} from 'next/router';
+import styles from '../../styles/SingleProduct.module.css';
+import { useState, useEffect} from 'react'
+
+
+const singleproduct = ({ product }) => {
+    const router = useRouter();
+   
+    const [productFuerza, setProduct] = useState([]);
+    const [isLoad, setIsLoad] = useState(false);  
+    
+    const { productonombre } = router.query;
+    
+   
+
+    useEffect(() => {
+
+        if(!router.isReady) return;
+        const { productonombre } = router.query;
+        var data = {
+            nombre:  { productonombre },
+         } 
+       
+      
+        obtenerProduct({ productonombre }); 
+    }, [router.isReady]);
+ 
+   const obtenerProduct = async () => {
+        const URLactual = window.location;
+        let ruta = URLactual.pathname
+        //ruta = ruta.replace(/\+|%20/g, " ");
+        //console.log(ruta.substr(10) ) 
+        ruta = ruta.substr(10)
+        
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre: ruta })
+        };
+        
+        const data = await fetch("https://fadimet.com.pa/backendInterFuerzaFadimet/index.php/auth/getProductosNombre", requestOptions);
+
+        const result = await data.json();
+        setProduct(result.products[0])
+        setIsLoad(true)
+   }
+
+
+
+
+
+   
+   
+   console.log(productFuerza)
+
+   if (isLoad) {
+    return (
+		<>     
+			<Head>
+				<title>{productFuerza.Producto.Nombre}</title>
+			</Head>
+			<div className={styles.single_container}>
+				<div className={styles.left_section}>
+					<img src={productFuerza.Images[0].src} className={styles.left_img} alt="" />
+				</div>
+				<div className={styles.right_section}>
+					<h3 className={styles.title}>{productFuerza.Producto.Nombre}</h3>
+					<p className={styles.price}>${productFuerza.Producto.Precio_Venta}</p>
+					<div
+						className={styles.para}
+						dangerouslySetInnerHTML={{
+							__html: productFuerza.Producto.Detalle
+						}}
+					></div>
+					<button
+						className="btn snipcart-add-item"
+						data-item-id={productFuerza.Producto.id}
+						data-item-price={productFuerza.Producto.Precio_Venta}
+						data-item-url={`products/${productFuerza.Producto.UPC_Code}`}
+						data-item-image={productFuerza.Images[0].src}
+						data-item-name={productFuerza.Producto.Nombre}
+					>
+						Agregar al Carrito 🛒
+					</button>
+				</div>
+			</div>
+		</>
+	);
+  }
+  
+	
+};
+
+export default singleproduct;
+
+
+
+

@@ -1,0 +1,32 @@
+{
+  "name": "fadimet",
+  "version": "0.1.0",
+  "description": "Fabricante de Mobiliario Medico",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@headlessui/react": "^1.7.13",
+    "@headlessui/tailwindcss": "^0.1.2",
+    "@heroicons/react": "^2.0.16",
+    "next": "^13.2.4",
+    "notiflix": "^3.2.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.7",
+    "react-icons": "^4.8.0",
+    "react-slick": "^0.29.0",
+    "react-toastify": "^9.1.2",
+    "slick-carousel": "^1.8.1"
+  },
+  "scripts": {
+    "dev": "next ",
+    "build": "next build ",
+    "start": "NODE_ENV=production node server.js",
+    "export": "next export"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.7"
+  }
+}

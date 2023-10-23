@@ -1,0 +1,14 @@
+@media screen and (max-width: 980px) {
+    .item {
+        display: none;
+    }
+}
+
+
+.bg {
+	background-color: #326295;
+  }
+  .colorTitulo {
+	color: #326295;
+  }
+  
