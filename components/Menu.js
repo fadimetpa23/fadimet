@@ -72,7 +72,7 @@ const Menu = () => {
          
 
           <div className="ml-36">
-            <Link legacyBehavior href="/categorias" >
+            <Link legacyBehavior href="/mobiliario" >
               <a className="text-sm font-semibold leading-6" aria-label="Mobiliario Medico">
                 <p className={styles.colorTitulo}>MOBILIARIO MÉDICO</p>  
               </a>
@@ -141,7 +141,7 @@ const Menu = () => {
           <div className="mt-6 flow-root  ">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6 ">
-                <Link legacyBehavior href="/categorias">
+                <Link legacyBehavior href="/mobiliario">
                     <a
                       onClick={() => setMobileMenuOpen(false)}
                       className="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
