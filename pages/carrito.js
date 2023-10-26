@@ -13,61 +13,82 @@ function carrito({ eliminarProducto, productosGlobal, vaciarCarrito}) {
         var prodsCart = JSON.parse(localStorage.getItem("productosGlobal"));
         console.log(prodsCart);
         var prodItems = {};
-
-        for(var i = 0; i < prodsCart.length; i++) {
-          prodItems[i] = {};
-          prodItems[i].Codigo			 =  prodsCart[i].Producto.id;
-          prodItems[i].Descripcion 	 =  prodsCart[i].Producto.Detalle;
-          prodItems[i].Item_Number 	 =  prodsCart[i].Producto.Item_Number;
-          prodItems[i].Nombre 	 	 =  prodsCart[i].Producto.Nombre;
-          prodItems[i].Marca 	 		 =  prodsCart[i].Producto.Marca;
-          prodItems[i].Category_L1 	 =  "SERVICIO SOLAR";
-          prodItems[i].Category_L2 	 =  prodsCart[i].Producto.Category_L2;
-          prodItems[i].Category_L3 	 =  prodsCart[i].Producto.Category_L3;
-          prodItems[i].Unidades 	 	 =  '1';
-          prodItems[i].Precio_Unitario =  prodsCart[i].Producto.Precio_Venta;
-          prodItems[i].Discount 	 	 =  '0.00';
-          prodItems[i].DiscountFactor  =  '0.00';
-          prodItems[i].TaxID 	 		 =  '';
-          prodItems[i].TaxName 	 	 =  '';
-          prodItems[i].TaxFactor 	 	 =  '';
-          prodItems[i].TaxValue 	 	 =  '';
-          prodItems[i].Total 	 		 =  '2';	
-
-        };	
-
-        var data = {	
-          nombreOrden:	   		e.nombre,				
-          emailOrden:        		e.correo,
-          telefonoOrden:  		e.telefono,
-          direccionOrden: 		e.direccion,
-          mensajeOrden: 			e.mensaje,
-          prodItems: 				prodItems		
-        };
-
-        
-        var requestOptions = {
-          method: 'POST',
-          body: JSON.stringify({ nombreOrden: e.nombre,
-            emailOrden: e.correo,
-            telefonoOrden: e.telefono,
-            direccionOrden: e.direccion,
-            mensajeOrden: e.mensaje,
-            prodItems: prodItems
-         }),
-        };
     
-        fetch("https://fadimet.com.pa/backendInterFuerzaFadimet/index.php/auth/addQuotes", requestOptions)
-          .then(response => response.text())
-          .then(result => console.log(result))
-          .catch(error => console.log('error', error)); 
+        for(var i = 0; i < prodsCart.length; i++) {
+            prodItems[i] = {};
+            prodItems[i].product_id =  prodsCart[i].id;
+            prodItems[i].quantity =  prodsCart[i].quantity;
+            prodItems[i].sku =  "0";	
+        }       
 
-          toast("Se creo su cotización, pronto lo contataremos");
-          vaciarCarrito([])
 
-          setTimeout(function(){
-              window.location.href = "/";
-          }, 4000);
+          var data = {
+            payment_method: "bacs",
+            payment_method_title: "Direct Bank Transfer",
+            set_paid: true,
+            customer_note: e.mensaje,
+            billing: {
+              first_name: e.nombre,
+              last_name: e.nombre,
+              address_1:  e.direccion,
+              address_2: "",
+              city: "",
+              state: "",
+              postcode: "",
+              country: "",
+              email:  e.correo,
+              phone:  e.telefono
+            },
+            shipping: {
+              first_name: e.nombre,
+              last_name: e.nombre,
+              address_1: e.direccion,
+              address_2: "",
+              city:"",
+              state: "",
+              postcode: "",
+              country: ""
+            },
+            line_items: 
+                    prodItems
+            ,
+            shipping_lines: [
+            ]
+          };
+          
+    
+          var formdata = new FormData();
+          formdata.append("data", data);
+    
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", "Basic Y2tfMzQ1MTY4ZDVhY2UyNzliM2Y0ZGE0ZTYxYTcxZmIwYTgwN2U1ZWJiNDpjc19mZmQ5Yjk4NjQ0MmYzNDBmNTYxY2Y2NGRhYTU4NDdiMTliZTUxZjA5");
+            myHeaders.append("Content-Type", "application/json");
+
+            var requestOptions = {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+    
+            const data2 = await fetch("https://fadimet.com.pa/woocoo/index.php/wp-json/wc/v3/orders", requestOptions)
+            const resulta = await data2.json();
+            console.log(resulta)
+            if(resulta.message){
+                toast("Ocurrio un problema creando la cotización");
+                
+        
+             }
+            if(resulta.status){
+                toast("Se creo su cotización, pronto lo contataremos");
+                vaciarCarrito([])
+                window.location.href = "/";
+            }
+
+
+
+
+
         }
 
         console.log(productosGlobal)
