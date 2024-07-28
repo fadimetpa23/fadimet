@@ -90,7 +90,7 @@ const FooterComponent = () => {
                      target="_blank"
                     className="text-gray-700 transition hover:opacity-75"
                     aria-label="Whatsapp">
-                  <BsWhatsapp className='inline text-blue-900'/> +507 6912-6538
+                  <BsWhatsapp className='inline text-blue-900'/> +507 66772056
                   </a>
                 </li>
 
